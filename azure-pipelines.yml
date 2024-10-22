@@ -11,16 +11,10 @@ variables:
   appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\\'
 
 steps:
-- task: NuGetToolInstaller@1
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-- task: VSBuild@1
-  inputs:
-    platform: 'x64'
-    solution: '$(solution)'
-    configuration: '$(buildConfiguration)'
-    msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)" /p:AppxPackageDir="$(appxPackageDir)" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload'
 - script: |
+    echo "Installing NuGet tool..."
+    nuget restore $(solution)
+    echo "Building solution..."
+    msbuild $(solution) /p:Configuration=$(buildConfiguration) /p:Platform=$(buildPlatform) /p:AppxPackageDir=$(appxPackageDir) /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload
     echo "Running tests"
     # Add your test commands here
